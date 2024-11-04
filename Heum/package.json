@@ -1,0 +1,20 @@
+{
+  "name": "umc-7th-node.js-first-run",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "UMC 7기 Node.js 파트 첫 시작 프로젝트",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "author": "Subin Kim <sudosubin@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.0.0",
+    "http-status-codes": "^2.3.0",
+    "mysql2": "^3.11.3"
+  }
+}

@@ -1,6 +1,7 @@
 import { getRes } from "../repositories/restaurant.repository.js";
-import { addReview, getReview } from '../repositories/review.repository.js';
+import { addReview, getReview, getMyStoreReviews } from '../repositories/review.repository.js';
 
+import { responseFromReviews } from '../dtos/review.dto.js';
 
 export const postReview = async (data) =>{
     const findResId = await getRes(data.restaurant_id)
@@ -18,4 +19,10 @@ export const postReview = async (data) =>{
         const review = await getReview(joinReviewId);
         return review;
     }
+}
+
+export const listMyStoreReviews = async(userId, storeId, cursor) =>{
+    console.log("listMysStoreReview: ", userId, storeId, cursor);
+    const reviews = await getMyStoreReviews(userId, storeId, cursor);
+    return responseFromReviews(reviews);
 }

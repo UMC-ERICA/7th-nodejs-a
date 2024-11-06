@@ -1,7 +1,5 @@
-import {
-    addRes,
-    getRes
-  } from "../repositories/restaurant.repository.js";
+
+import { addRes, getRes } from "../repositories/restaurant.repository.js";
   
   export const makeRestaurant = async (data) =>{
       const joinResId = await addRes({

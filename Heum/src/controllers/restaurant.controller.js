@@ -24,7 +24,7 @@ export const newRestaurant = async(req, res, next) =>{
 export const handleReviewPost = async(req, res, next) =>{
     console.log("가게에 리뷰 달기 요청!");
     console.log("body: ", req.body);
-    
+    console.log(bodyToRv(req.body));
     const review = await postReview((bodyToRv(req.body)));
     res.status(StatusCodes.OK).json({ result: review });
 }

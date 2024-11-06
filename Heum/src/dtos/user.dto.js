@@ -7,9 +7,10 @@ export const bodyToUser = (body) => {
         name: body.name,
         phone: body.phone,
         birth,
-        address: body.address || "",
+        address: body.address ?? null,
         state: body.state || "accession",
-        point: body.point || "0",
-        food: body.food || ""
+        delete_at: new Date(body.delete_at) ?? null,
+        point: body.point || 0,
+        food: body.food ?? null
     };
   };

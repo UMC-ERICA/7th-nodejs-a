@@ -1,50 +1,30 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
 export const getReview = async (reviewId) => {
-  const conn = await pool.getConnection();
-
-	try {
-	  const [review] = await pool.query(`SELECT * FROM review WHERE id = ?;`, reviewId);
-	
-	  console.log(review);
-	
-	  if (review.length == 0) {
-	    return null;
-	  }
-	
-	  return review;
-	} catch (err) {
-	  throw new Error(
-	    `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
-	  );
-	} finally {
-	  conn.release();
-	}
+  const getreview = await prisma.review.findFirst({where: {id: reviewId}});
+  return getreview;
 };
 
 
 export const addReview = async(data)=>{
-  const conn = await pool.getConnection();
+  //전달받은 데이터로 리뷰 생성
+  const joinReview = await prisma.review.create({ data: data });
+  return joinReview.id;
+}
 
-    try{
-        const [result] = await pool.query(
-            `INSERT INTO review (account_xid, restaurant_id, title, body, rating, create_at) VALUES (?, ?, ?, ?, ?, ?);`,
-            [
-              data.account_xid,
-              data.restaurant_id,
-              data.title,
-              data.body,
-              data.rating,
-              data.create_at
-            ]
-          );
+export const getMyStoreReviews = async(userId, storeId, cursor)=>{
+  const reviews = await prisma.review.findMany({
+    select: {
+      id: true,
+      title: true,
+      body: true,
+      rating: true,
+      create_at: true
+    },
+    where: { AND: [{account_xid: userId}, {restaurant_id: storeId, id: {gt: cursor }}]},
+    orderBy: {id: "asc"},
+    take: 5
+  });
 
-          return result.insertId;
-    }catch(err){
-        throw new Error(
-            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
-          );
-    }finally{
-        conn.release();   //db 연결을 해제
-    }
+  return reviews;
 }

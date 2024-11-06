@@ -1,9 +1,10 @@
-import { getRes } from "../repositories/restaurant.repository.js";
-
 //repositories
+import { getRes } from "../repositories/restaurant.repository.js";
 import { getUser } from "../repositories/user.repository.js";
-import { addMission, getMission, addTryMisson, getTryMission } from "../repositories/mission.repository.js";
-  
+import { addMission, getMission, addTryMisson, getTryMission, 
+    getStoreMissions, getTryingMyMissions, getChangedMission} from "../repositories/mission.repository.js";
+import {responseFromMissions} from '../dtos/mission.dto.js';
+
   export const makeMission = async (data) =>{
       const findResId = await getRes(data.restaurant_id)
       if(findResId === null){
@@ -19,7 +20,7 @@ import { addMission, getMission, addTryMisson, getTryMission } from "../reposito
           const mission = await getMission(joinMissionId);
           return mission;
       }
-  }
+  };
 
   
   
@@ -45,5 +46,22 @@ import { addMission, getMission, addTryMisson, getTryMission } from "../reposito
           const mission = await getTryMission(joinTryMission);
           return mission;
       }
-  }
+  };
   
+  export const listStoreMissions = async (storeId, cursor) =>{
+    console.log("listMysStoreReview: ", storeId, cursor);
+    const missions = await getStoreMissions(storeId, cursor);
+    return responseFromMissions(missions);
+  };
+
+  export const listTryingMyMissions = async (userId, state, cursor) =>{
+    console.log("listTryingMyMissions: ", userId, cursor);
+    const missions = await getTryingMyMissions(userId, state, cursor);
+    return responseFromMissions(missions);
+  };
+
+  export const changeMissionState = async (userId, missionId, state)=>{
+    console.log("changeMissionState: ", userId, missionId, state);
+    const result = await getChangedMission(userId, missionId, state);
+    return result;
+  }

@@ -25,9 +25,7 @@ app.get("/", (req, res) => {
 
 app.use(`${API}/users`, userRoute);
 app.use(`${API}/store`, storeRoute);
-app.use(`${API}/review`, reviewRoute);
 app.use(`${API}/mission`, missionRoute);
-app.use(`${API}/challenge`, challengeRoute);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

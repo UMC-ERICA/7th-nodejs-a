@@ -22,7 +22,7 @@ export const addReview = async (storeId, reviewData) => {
       content: reviewData.content,
     },
   });
-  return review.id;
+  return review;
 };
 
 // 가게 조회

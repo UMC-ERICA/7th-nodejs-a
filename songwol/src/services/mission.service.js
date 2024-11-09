@@ -19,23 +19,32 @@ export const storeMissionList = async (storeId) => {
   return { ...missionList}
 }
 
-// 유저에 미션 추가
-export const challengeMission = async (userId, missionId) => {
-  // 미션 존재 여부 확인
+// 유저에 미션추가
+export const challengeMission = async (challengeData) => {
+  const { userId, missionId } = challengeData;
+
+  // 1. 미션 존재 여부 확인
   const mission = await missionRepository.findMissionById(missionId);
   if (!mission) {
     throw new Error("해당 미션이 존재하지 않습니다.");
   }
 
-  // 이미 도전 중인지 확인
+  // 2. 이미 도전 중인지 확인
   const existingChallenge = await missionRepository.findChallengeByUserAndMission(userId, missionId);
   if (existingChallenge) {
-    return { message: "이미 도전 중인 미션입니다." };
+    return {
+      success: false,
+      message: "이미 도전 중인 미션입니다.",
+    };
   }
 
-  // 도전 생성
+  // 3. 도전 생성
   const challengeId = await missionRepository.createChallenge(userId, missionId);
-  return challengeId;
+  return {
+    success: true,
+    challengeId,
+    message: "미션 도전이 성공적으로 추가되었습니다.",
+  };
 };
 
 // 유저별 미션 조회

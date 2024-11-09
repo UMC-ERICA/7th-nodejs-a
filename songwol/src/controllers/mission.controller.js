@@ -1,5 +1,6 @@
 import * as missionService from '../services/mission.service.js';
 import { MissionDTO } from '../dtos/mission.dto.js';
+import { ChallengeDTO } from '../dtos/challenge.dto.js';
 
 // 가게에 미션 추가
 export const addMissionToStore = async (req, res, next) => {
@@ -33,9 +34,10 @@ export const challengeMission = async (req, res, next) => {
   try {
     const missionId = parseInt(req.params.missionId, 10);
     const { userId } = req.body;
-    
-    // 도전 수행
-    const newChallengeId = await missionService.challengeMission(userId, missionId);
+
+    const challengeData = new ChallengeDTO({ userId, missionId });
+
+    const newChallengeId = await missionService.challengeMission(challengeData);
 
     res.status(201).json({
       message: "미션 도전 추가에 성공했습니다.",

@@ -1,6 +1,7 @@
 import { prisma } from "../db.config.js";
 import { MissionStatus } from '@prisma/client';
 
+// 가게별 미션 생성
 export const createMission = async (storeId, missionData) => {
   const mission = await prisma.mission.create({
     data: {
@@ -13,6 +14,7 @@ export const createMission = async (storeId, missionData) => {
   return mission;
 };
 
+// 미션 찾기
 export const findMissionById = async (missionId) => {
   const mission = await prisma.mission.findUnique({
     where: { id: missionId },
@@ -20,6 +22,7 @@ export const findMissionById = async (missionId) => {
   return mission;
 };
 
+// 가게별 미션 조회
 export const showStoreMission = async (storeId) => {
   const showMission = await prisma.mission.findMany({
     where: { id: storeId },
@@ -27,6 +30,7 @@ export const showStoreMission = async (storeId) => {
   return showMission;
 };
 
+//유저미션별 조회
 export const findChallengeByUserAndMission = async (userId, missionId) => {
   const challenge = await prisma.userMission.findFirst({
     where: {
@@ -38,7 +42,7 @@ export const findChallengeByUserAndMission = async (userId, missionId) => {
   return challenge !== null;
 };
 
-
+// 유저별 미션 생성
 export const createChallenge = async (userId, missionId) => {
   const challenge = await prisma.userMission.create({
     data: {
@@ -49,6 +53,7 @@ export const createChallenge = async (userId, missionId) => {
   return challenge.id;
 };
 
+// 유저별 미션 조회
 export const showUserMission = async (userId) => {
   const numericUserId = parseInt(userId, 10);
   if (isNaN(numericUserId)) {
@@ -68,6 +73,7 @@ export const showUserMission = async (userId) => {
   return showMission;
 };
 
+// 미션 성공 처리
 export const success = async(userId, missionId) => {
   const updatedMission = await prisma.mission.updateMany({
     where: {

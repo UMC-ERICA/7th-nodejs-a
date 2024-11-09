@@ -1,6 +1,7 @@
 import * as storeService from '../services/store.service.js';
 import { ReviewDTO } from '../dtos/review.dto.js';
 
+// 특정 지역에 가게 추가하기
 export const addStore = async (req, res, next) => {
   try {
     const storeData = req.body;
@@ -12,6 +13,7 @@ export const addStore = async (req, res, next) => {
   }
 };
 
+// 리뷰 추가
 export const addReviewToStore = async (req, res, next) => {
   try {
     const storeId = parseInt(req.params.storeId, 10);
@@ -24,6 +26,7 @@ export const addReviewToStore = async (req, res, next) => {
   }
 };
 
+// 리뷰 조회
 export const showReview = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.userId, 10);

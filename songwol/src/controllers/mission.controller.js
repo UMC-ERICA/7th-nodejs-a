@@ -23,7 +23,7 @@ export const getStoreMission = async (req, res, next) => {
 
     const missions = await missionService.storeMissionList(storeId);
 
-    res.status(201).json({ storeId: storeId, missions });
+    res.status(200).json({ storeId: storeId, missions });
   } catch (error) {
     next(error);
   }
@@ -55,7 +55,7 @@ export const getUserMission = async (req, res, next) => {
 
     const missions = await missionService.userMissionList(userId);
 
-    res.status(201).json({ userId: userId, missions });
+    res.status(200).json({ userId: userId, missions });
   } catch (error) {
     next(error);
   }
@@ -69,7 +69,7 @@ export const successMission = async (req, res, next) => {
 
     const missions = await missionService.userMissionSuccess(userId, missionId);
 
-    res.status(201).json({ missions, message: "미션 완료 처리에 성공했습니다." });
+    res.status(200).json({ missions, message: "미션 완료 처리에 성공했습니다." });
   } catch (error) {
     next(error);
   }

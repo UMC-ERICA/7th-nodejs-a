@@ -29,10 +29,10 @@ export const addReviewToStore = async (req, res, next) => {
 // 리뷰 조회
 export const showReview = async (req, res, next) => {
   try {
-    const userId = parseInt(req.params.userId, 10);
+    const storeId = parseInt(req.params.storeId, 10);
     
-    const reviews = await storeService.reviewList(userId);
-    res.status(201).json({ userId: userId, reviews });
+    const reviews = await storeService.reviewList(storeId);
+    res.status(200).json({ storeId: storeId, reviews });
   } catch (error) {
     next(error);
   }

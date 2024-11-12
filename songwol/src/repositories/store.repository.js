@@ -35,8 +35,8 @@ export const findStoreById = async (storeId) => {
 
 // 리뷰 조회
 export const showReview = async (userId) => {
-  const user = await prisma.review.findMany({
+  const review = await prisma.review.findMany({
     where: { id: userId },
   })
-  return user;
+  return review;
 };

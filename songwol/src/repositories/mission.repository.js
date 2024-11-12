@@ -93,4 +93,6 @@ export const success = async(userId, missionId) => {
   if (updatedMission.count === 0) {
     throw new Error("missionId가 유효하지 않습니다.");
   }
+  
+  return updatedMission;
 }

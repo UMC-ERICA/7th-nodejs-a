@@ -10,6 +10,6 @@ router.post('/', storeController.addStore);
 router.post("/add/:storeId", storeController.addReviewToStore);
 
 // 리뷰 조회
-router.get("/get/:userId", storeController.showReview);
+router.get("/review/:storeId", storeController.showReview);
 
 export default router;

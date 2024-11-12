@@ -20,11 +20,11 @@ export const addReviewToStoreService = async (storeId, reviewData) => {
 };
 
 // 리뷰 조회
-export const reviewList = async ( userId ) => {
-  const user = await storeRepository.findStoreById(userId);
-  if (!user) {
+export const reviewList = async ( storeId ) => {
+  const store = await storeRepository.findStoreById(storeId);
+  if (!store) {
     throw new Error("해당 가게가 존재하지 않습니다.");
   }
-  const showList = await storeRepository.showReview(userId);
+  const showList = await storeRepository.showReview(storeId);
   return { ...showList}
 }

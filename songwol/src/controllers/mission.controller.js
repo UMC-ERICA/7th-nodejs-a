@@ -10,7 +10,8 @@ export const addMissionToStore = async (req, res, next) => {
 
     const newMissionId = await missionService.addMissionToStore(storeId, missionData);
     
-    res.status(201).json({ message: "미션이 추가되었습니다.", data: newMissionId });
+    res.status(201);
+    res.success({ message: "미션이 추가되었습니다.", data: newMissionId });
   } catch (error) {
     next(error);
   }
@@ -23,7 +24,8 @@ export const getStoreMission = async (req, res, next) => {
 
     const missions = await missionService.storeMissionList(storeId);
 
-    res.status(200).json({ storeId: storeId, missions });
+    res.status(200);
+    res.success({ storeId: storeId, missions });
   } catch (error) {
     next(error);
   }
@@ -39,10 +41,8 @@ export const challengeMission = async (req, res, next) => {
 
     const newChallengeId = await missionService.challengeMission(challengeData);
 
-    res.status(201).json({
-      message: "미션 도전 추가에 성공했습니다.",
-      challengeId: newChallengeId,
-    });
+    res.status(201);
+    res.success({ message: "미션 도전 추가에 성공했습니다.", challengeId: newChallengeId });
   } catch (error) {
     next(error);
   }
@@ -55,7 +55,8 @@ export const getUserMission = async (req, res, next) => {
 
     const missions = await missionService.userMissionList(userId);
 
-    res.status(200).json({ userId: userId, missions });
+    res.status(200);
+    red.success({ userId: userId, missions });
   } catch (error) {
     next(error);
   }
@@ -69,7 +70,8 @@ export const successMission = async (req, res, next) => {
 
     const missions = await missionService.userMissionSuccess(userId, missionId);
 
-    res.status(200).json({ missions, message: "미션 완료 처리에 성공했습니다." });
+    res.status(200);
+    res.success({ message: "미션 완료 처리에 성공했습니다.", missions });
   } catch (error) {
     next(error);
   }

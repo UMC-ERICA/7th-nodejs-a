@@ -8,9 +8,6 @@ export const handleUserSignUp = async (req, res, next) => {
   console.log("body:", req.body); // 값이 잘 들어오나 확인하기 위한 테스트용
 
   const user = await userSignUp(bodyToUser(req.body));
-  console.log("Final User Object:", user); // 최종 반환값 - undefined
-  res.status(StatusCodes.OK).json({
-    status: StatusCodes.OK,
-    message: "회원가입 완료"
-  });
+
+  res.status(StatusCodes.OK).success(user);
 };

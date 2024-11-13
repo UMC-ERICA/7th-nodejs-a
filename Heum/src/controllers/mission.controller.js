@@ -15,18 +15,22 @@ export const handleMyStoreReviewList = async(req, res, next) =>{
         parseInt(req.params.storeId),
         typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
     );
-    res.status(StatusCodes.OK).json({ success: true, data: reviews });
+    res.status(StatusCodes.OK).success(reviews);
 }
 
 export const handleStoreMissionList = async(req, res, next) =>{
     console.log("가게 미션 조회를 요청했습니다!");
     console.log("body:", req.body, "\nparams:", req.params, "\nquery:", req.query);
 
-    const missions = await listStoreMissions(
-        parseInt(req.params.storeId),
-        typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
-    );
-    res.status(StatusCodes.OK).json({ success: true, data: missions });
+    try{
+        const missions = await listStoreMissions(
+            parseInt(req.params.storeId),
+            typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+        );
+        res.status(StatusCodes.OK).success(missions);
+    }catch(err){
+        next(err);
+    }
 }
 
 
@@ -34,22 +38,31 @@ export const handleTringMyMissionList = async(req, res, next)=>{
     console.log("진행중인 미션 조회를 요청했습니다!");
     console.log("body:", req.body, "\nparams:", req.params, "\nquery:", req.query);
 
-    const myMissions = await listTryingMyMissions(
-        parseInt(req.params.userId),
-        req.params.state,
-        typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
-    );
-    res.status(StatusCodes.OK).json({ success: true, data: myMissions });
+    try{
+        const myMissions = await listTryingMyMissions(
+            parseInt(req.params.userId),
+            req.params.state,
+            typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
+        );
+        res.status(StatusCodes.OK).success(myMissions);
+    }catch(err){
+        next(err);
+    }
 }
+
 
 export const handleMissionSuccess = async(req, res, next)=>{
     console.log("미션 상태 변경을 요청했습니다!");
     console.log("body:", req.body, "\nparams:", req.params, "\nquery:", req.query);
 
-    const mission = await changeMissionState(
-        parseInt(req.params.userId),
-        parseInt(req.params.missionId),
-        req.params.state
-    );
-    res.status(StatusCodes.OK).json({ success: true, data: mission });
+    try{
+        const mission = await changeMissionState(
+            parseInt(req.params.userId),
+            parseInt(req.params.missionId),
+            req.params.state
+        );
+        res.status(StatusCodes.OK).success(mission);
+    }catch(err){
+        next(err);
+    }
 }

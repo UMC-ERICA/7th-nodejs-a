@@ -15,8 +15,9 @@ export const handleMyStoreReviewList = async(req, res, next) =>{
             parseInt(req.params.storeId),
             typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
         );
-        res.status(StatusCodes.OK).success(data);
+        res.status(StatusCodes.OK).success(reviews);
     }catch(err){
+        console.log("error: ", err);
         next(err);
     }
 }

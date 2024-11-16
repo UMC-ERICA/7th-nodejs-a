@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  xid         Int       @id @default(autoincrement())
+  nickname    String    @db.VarChar(10)
+  create_at   DateTime  @db.Date
+  name        String    @db.VarChar(45)
+  phone       String    @db.VarChar(45)
+  birth       DateTime  @db.Date
+  address     String?   @db.VarChar(45)
+  state       StateEnum
+  delete_at   DateTime? @db.Date
+  point       Int?
+  food        String?   @db.VarChar(45)
+
+  reviews     Review[]
+  missions    MissionList[]
+  inqueries   Inquery[]
+  socialLogins SocialLogin[]
+  pointLists  Point_List[]
+  comments    Comment[]
+}
+
+model Restaurant {
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(25)
+  phone      String?    @db.VarChar(15)
+  address    String      @db.VarChar(45)
+
+  reviews    Review[]
+  missions   Mission[]
+  images     Restarant_Image[]
+}
+
+model Mission {
+  id              Int           @id @default(autoincrement())
+  title           String        @db.VarChar(45)
+  content         String        @db.Text
+  point           Int
+  restaurant_id   Int?
+  deadline        DateTime?     @db.Date
+
+  restaurant      Restaurant?   @relation(fields: [restaurant_id], references: [id])
+  missionLists    MissionList[]
+}
+
+model Review {
+  id                Int       @id @default(autoincrement())
+  account_xid       Int
+  restaurant_id     Int
+  title             String     @db.VarChar(30)
+  body              String?    @db.Text
+  rating            Float
+  create_at        DateTime   @db.Date
+
+  account          Account     @relation(fields: [account_xid], references: [xid])
+  restaurant       Restaurant   @relation(fields: [restaurant_id], references: [id])
+  comments         Comment[]
+  images           Review_image[]
+}
+
+model MissionList {
+  id              Int       @id @default(autoincrement())
+  account_xid    Int
+  mission_id      Int
+  state           MissionStateEnum
+  create_at      DateTime  @db.Date
+
+  account        Account    @relation(fields: [account_xid], references: [xid])
+  mission       Mission    @relation(fields: [mission_id], references: [id])
+}
+
+model Point_List {
+  id              Int      @id @default(autoincrement())
+  account_xid     Int
+  created_at      DateTime @db.Date
+  change_point    Int
+  source          String    @db.VarChar(45)
+
+  account         Account   @relation(fields: [account_xid], references: [xid])
+}
+
+model Comment {
+  id              Int       @id @default(autoincrement())
+  account_xid    Int
+  review_id      Int
+  body            String     @db.Text
+  comment_date    DateTime   @db.DateTime
+
+  account        Account    @relation(fields: [account_xid], references: [xid])
+  review         Review     @relation(fields: [review_id], references: [id])
+}
+
+model Inquery {
+  id              Int       @id @default(autoincrement())
+  title           String    @db.VarChar(30)
+  body            String    @db.Text
+  create_at      DateTime  @db.Date
+  image           String?   @db.VarChar(45)
+  state           InquiryStateEnum
+  account_xid    Int
+
+  account        Account    @relation(fields: [account_xid], references: [xid])
+}
+
+model Review_image {
+  id              Int       @id @default(autoincrement())
+  review_id       Int
+  image           String     @db.VarChar(45)
+
+  review         Review     @relation(fields: [review_id], references: [id])
+}
+
+model SocialLogin {
+  id              Int       @id @default(autoincrement())
+  account_xid     Int
+  platform        SocialPlatformEnum
+  created_at      DateTime  @db.Time
+  access_token    String     @db.VarChar(500)
+  refresh_token    String     @db.VarChar(500)
+  social_user_id  String     @db.VarChar(45)
+
+  account         Account    @relation(fields: [account_xid], references: [xid])
+}
+
+model Restarant_Image {
+  id                  Int       @id @default(autoincrement())
+  image               String     @db.VarChar(45)
+  restaurant_id       Int
+
+  restaurant          Restaurant  @relation(fields: [restaurant_id], references: [id])
+}
+
+// Enum Types
+enum StateEnum {
+  accession
+  secession
+}
+
+enum MissionStateEnum {
+  clear
+  trying
+  failed
+}
+
+enum InquiryStateEnum {
+  answered
+  yet
+}
+
+enum SocialPlatformEnum {
+  google
+  kakao
+  naver
+  apple
+}

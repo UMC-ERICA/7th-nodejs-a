@@ -10,7 +10,8 @@ import {
   newReview,
   newMyTryingMission, 
   readMyReviewList,
-  readMyTryingMissions
+  readMyTryingMissions,
+  updateMyTryingMissions
 } from "./controllers/user.controller.js";
 
 dotenv.config();
@@ -47,6 +48,7 @@ app.post("/restaurant", newRestaurant);
 app.post("/my-page/review", newReview);
 app.post("/missions", newMission);
 app.post("/my-missions", newMyTryingMission);
+app.patch("/my-missions/:user_id/:mission_id", updateMyTryingMissions);
 
 //처리못한 에러 처리
 app.use((err, req, res, next) => {

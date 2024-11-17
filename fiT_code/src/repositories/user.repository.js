@@ -74,3 +74,35 @@ export const getMyReviews = async (user_id) => {
     throw new Error('Database error');
   }
 };
+
+export const ongoingToSucceed = async (user_id, mission_id) => {
+  const mission = await prisma.AccountMission.findUnique({
+    where: {
+      Account_id_Mission_id: {
+        Account_id: user_id,
+        Mission_id: mission_id,
+      }
+    },
+    select: {
+      success: true
+    }
+  });
+
+  if (!mission || mission.success !== "ongoing"){
+    return null;
+  }
+
+  const updatedMission = await prisma.AccountMission.update({
+    where:{
+      Account_id_Mission_id: {
+        Account_id: user_id,
+        Mission_id: mission_id,
+      },
+    },
+    data: {
+      success: "succeed"
+    },
+  });
+
+  return updatedMission;
+}

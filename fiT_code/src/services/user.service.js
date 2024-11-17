@@ -7,6 +7,7 @@ import {
   getMyTryingMission,
   getMyReviews,
   getTryingMissionBykey,
+  ongoingToSucceed,
 } from "../repositories/user.repository.js";
 
 //내가 하고 있는 미션 생성
@@ -66,7 +67,7 @@ export const findMyTryingMissions = async (userId) => {
     const missions = await getMyTryingMission(userId);  
 
     if (missions.length === 0) {
-      throw new error.NotOngoingMission("not ongoing missions", null)
+      throw new error.NotFoundOngoingMission("not found ongoing missions", null);
     }
 
     return { success: true, data: missions };
@@ -76,3 +77,18 @@ export const findMyTryingMissions = async (userId) => {
     throw error;
   }
 };
+//진행완료로 바꾸기
+export const updateMyMissionStatus = async (user_id, mission_id) => {
+  try {
+    const updatedMission = await ongoingToSucceed(user_id, mission_id);
+
+    if (!updatedMission)
+      throw new error.NotFoundOngoingMission("not found ongoing missions", null);
+
+    return {success: true, data: updatedMission};
+  }
+  catch (error){
+    console.error("error at updateMyMissionStatus", null);
+    throw error;
+  }
+}

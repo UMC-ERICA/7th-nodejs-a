@@ -49,7 +49,7 @@ export class Errordata extends Error {
     }
   }
 
-  export class NotOngoingMission extends Errordata {
+  export class NotFoundOngoingMission extends Errordata {
     constructor(reason, data) {
       super(reason, "M011", data);
     }

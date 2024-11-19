@@ -14,7 +14,7 @@ export const userSignUp = async (body) => {
   const joinUserId = getMyReviews(body);
 
   if (joinUserId === null) {
-    throw new Error('이미 존재하는 이메일입니다.');
+    throw new Error('이미 존재하는 이메일');
   }
 
   for (const preference of data.preferences) {

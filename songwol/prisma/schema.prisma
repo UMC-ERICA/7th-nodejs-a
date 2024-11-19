@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique(map: "email") @db.VarChar(30)
+  name          String
+  gender        Boolean
+  birth         DateTime
+  address       String
+  number        String
+  points        Int      @default(0)
+
+  userMissions UserMission[]
+}
+
+model Store {
+  id       Int    @id @default(autoincrement())
+  name     String
+  location String
+  phone    String
+
+  reviews  Review[]
+  missions Mission[]
+}
+
+model Review {
+  id                 Int    @id @default(autoincrement())
+  storeId            Int
+  userId             Int
+  starvariablevalues Int
+  content            String @db.Text
+  store              Store  @relation(fields: [storeId], references: [id])
+}
+
+enum MissionStatus {
+  IN_PROGRESS
+  COMPLETED
+  NOT_STARTED
+}
+
+model Mission {
+  id         Int      @id @default(autoincrement())
+  storeId    Int
+  task       String
+  savePoints Int
+  deadline   DateTime
+  success   MissionStatus @default(IN_PROGRESS)
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @updatedAt @db.Timestamp(6)
+
+  store     Store     @relation(fields: [storeId], references: [id])
+  userMissions UserMission[]
+}
+
+model UserMission {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  missionId Int
+
+  user      User    @relation(fields: [userId], references: [id])
+  mission   Mission @relation(fields: [missionId], references: [id])
+  
+  @@unique([userId, missionId])
+}

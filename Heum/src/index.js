@@ -2,10 +2,16 @@ import cors from 'cors';
 import dotenv from "dotenv";
 import express from "express";
 
+//Swagger 세팅
+import swaggerAutogen from "swagger-autogen";
+import swaggerUiExpress from "swagger-ui-express";
+
 import { handleUserSignUp, handleUserMissionAdd } from './controllers/user.controller.js';
 import { newRestaurant, handleReviewPost, handleMissionAdd } from './controllers/restaurant.controller.js';
 import { handleMyStoreReviewList } from './controllers/review.controller.js';
 import { handleStoreMissionList, handleTringMyMissionList , handleMissionSuccess} from './controllers/mission.controller.js';
+
+import doc from "./swagger.js";
 
 dotenv.config();
 
@@ -35,6 +41,31 @@ app.use((req, res, next) => {
 
   next();
 });
+
+//Swagger 세팅-------------------
+app.use(
+  "/docs",
+  swaggerUiExpress.serve,
+  swaggerUiExpress.setup({}, {
+    swaggerOptions: {
+      url: "/openapi.json",
+    },
+  })
+);
+
+app.get("/openapi.json", async (req, res, next) => {
+  // #swagger.ignore = true
+  const options = {
+    openapi: "3.0.0",
+    disableLogs: true,
+    writeOutputFile: false,
+  };
+  const outputFile = "/dev/null"; // 파일 출력은 사용하지 않습니다.
+  const routes = ["./src/index.js"];
+  const result = await swaggerAutogen(options)(outputFile, routes, doc);
+  res.json(result ? result.data : null);
+});
+//Swagger 세팅-------------------
 
 
 /*

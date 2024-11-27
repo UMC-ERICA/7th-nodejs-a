@@ -1,13 +1,26 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
+
 import userRoute from "./routes/users.routes.js";
 import storeRoute from "./routes/store.routes.js";
 import missionRoute from "./routes/mission.routes.js";
 
+import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import session from "express-session";
+import passport from "passport";
+import { googleStrategy, kakaoStrategy } from "./auth.config.js";
+import { prisma } from "./db.config.js";
+
 dotenv.config();
+
+passport.use(googleStrategy);
+passport.use(kakaoStrategy);
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
 
 const app = express();
 const port = process.env.PORT;
@@ -29,7 +42,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const API = "/api/v1";
+const preAPI = "/api/v1";
 
 app.use(cors()); // cors 방식 허용
 app.use(express.static("public")); // 정적 파일 접근
@@ -37,8 +50,50 @@ app.use(express.json()); // request의 본문을 json으로 해석할 수 있도
 app.use(express.urlencoded({ extended: false })); // 단순 객체 문자열 형태로 본문 데이터 해석
 
 app.get("/", (req, res) => {
+  // #swagger.ignore = true
+  console.log(req.user);
   res.send("Hello World!");
 });
+
+app.use(
+  session({
+    cookie: {
+      maxAge: 7 * 24 * 60 * 60 * 1000, // ms
+    },
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    store: new PrismaSessionStore(prisma, {
+      checkPeriod: 2 * 60 * 1000, // ms
+      dbRecordIdIsSessionId: true,
+      dbRecordIdFunction: undefined,
+    }),
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// 구글 로그인
+app.get("/oauth2/login/google", passport.authenticate("google"));
+app.get(
+  "/oauth2/callback/google",
+  passport.authenticate("google", {
+    failureRedirect: "/oauth2/login/google",
+    failureMessage: true,
+  }),
+  (req, res) => res.redirect("/")
+);
+
+// 카카오 로그인
+app.get('/oauth2/login/kakao', passport.authenticate('kakao'));
+app.get('/oauth2/callback/kakao', 
+  passport.authenticate('kakao', {
+    failureRedirect: '/oauth2/login/kakao',
+    failureMessage: true,
+  }),
+  (req, res) => res.redirect('/')
+);
 
 // 스웨거
 app.use(
@@ -65,17 +120,16 @@ app.get("/openapi.json", async (req, res, next) => {
       title: "UMC 7th",
       description: "UMC 7th Node.js 테스트 프로젝트입니다.",
     },
-    host: "localhost:3000",
-    basePath: API,
+    host: `localhost:${port}`,
   };
 
   const result = await swaggerAutogen(options)(outputFile, routes, doc);
   res.json(result ? result.data : null);
 });
 
-app.use(`${API}/users`, userRoute);
-app.use(`${API}/store`, storeRoute);
-app.use(`${API}/mission`, missionRoute);
+app.use(`${preAPI}/users`, userRoute);
+app.use(`${preAPI}/store`, storeRoute);
+app.use(`${preAPI}/mission`, missionRoute);
 
 // 전역 오류를 처리하기 위한 미들웨어
 app.use((err, req, res, next) => {

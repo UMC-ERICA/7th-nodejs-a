@@ -106,3 +106,23 @@ export const ongoingToSucceed = async (user_id, mission_id) => {
 
   return updatedMission;
 }
+//유저 정보 업데이트
+export const updateUser = async (data) => {
+  const user = await prisma.account.findFirst({ where: { email: data.email } });
+  if (!user) {
+    return null;
+  }
+
+  const updatedUser = await prisma.account.update({
+    where: { email: data.email },
+    data: {
+      name: data.name,
+      gender: data.gender,
+      nickname: data.nickname,
+      address: data.address,
+      phone_number: data.phone_number,
+    },
+  });
+
+  return updatedUser;
+};

@@ -8,6 +8,7 @@ import {
   getMyReviews,
   getTryingMissionBykey,
   ongoingToSucceed,
+  updateUser,
 } from "../repositories/user.repository.js";
 
 //내가 하고 있는 미션 생성
@@ -89,6 +90,21 @@ export const updateMyMissionStatus = async (user_id, mission_id) => {
   }
   catch (error){
     console.error("error at updateMyMissionStatus", null);
+    throw error;
+  }
+}
+
+export const updateUserInfor = async (data) => {
+  try {
+    const updatedInformation = await updateUser(data);
+
+    if (!updatedInformation)
+      throw new error.NotFoundAccount("not found account", null);
+
+    return {success: true, data: updatedInformation};
+  }
+  catch (error){
+    console.error("error at updateUserInfor", null);
     throw error;
   }
 }

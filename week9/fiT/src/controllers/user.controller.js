@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { bodyToReview } from "../dtos/review.dto.js";
 import { bodyToMyTryingMission } from "../dtos/user.dto.js";
-import { createMyTryingMission, updateMyMissionStatus } from "../services/user.service.js";
+import { createMyTryingMission, updateMyMissionStatus, updateUserInfor } from "../services/user.service.js";
 import { createReview } from "../services/review.service.js";
 import { readReviews} from "../services/user.service.js";
 import { findMyTryingMissions } from '../services/user.service.js';
@@ -640,6 +640,30 @@ export const updateMyTryingMissions = async (req, res, next) => {
     }
   }
   catch(error) {
+    next(error);
+  }
+}
+
+export const updateUserInfo = async (req, res, next) => {
+  try{
+    const updatedInfo = await updateUserInfor(req.body);
+
+    if (updatedInfo.success){
+      const response = JSON.parse(
+        JSON.stringify(updatedInfo.data, (key, value) =>
+        typeof value === 'bigint' ? value.toString() : value)
+      )
+      res.status(StatusCodes.OK).success(response);
+    }
+    else{
+      res.status(404).error({
+        errorCode: err.errorCode,
+        reason: err.message,
+        data: err.data
+      });
+    }
+  }
+  catch(error){
     next(error);
   }
 }

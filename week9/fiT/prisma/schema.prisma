@@ -14,7 +14,7 @@ model Account {
   birthday         DateTime
   address          String   @db.VarChar(100)
   nickname         String   @db.VarChar(20)
-  email            String   @db.VarChar(40)
+  email            String   @db.VarChar(40) @unique
   gender           Int?     @db.TinyInt
   phone_number     String?  @db.VarChar(20)
   status           String?  @db.VarChar(15)
@@ -139,4 +139,13 @@ model AccountMission {
   @@index([Mission_id])
   @@index([Account_id])
   @@map("account_mission")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.VarChar(512)
+  expiresAt DateTime @map("expires_at")
+
+  @@map("session")
 }

@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id               String   @id @default(cuid()) @db.VarChar(25)
+  password         String   @db.VarChar(25)
+  name             String   @db.VarChar(15)
+  birthday         DateTime
+  address          String   @db.VarChar(100)
+  nickname         String   @db.VarChar(20)
+  email            String   @db.VarChar(40) @unique
+  gender           Int?     @db.TinyInt
+  phone_number     String?  @db.VarChar(20)
+  status           String?  @db.VarChar(15)
+  inactive_date    DateTime?
+  created_date     DateTime @db.DateTime(3)
+  updated_date     DateTime? @db.DateTime(3)
+  savepoint        Int?
+  location_O       Int
+  marketing_O      Int
+  event_reception  Int
+  review_reception Int
+  inquiry_reception Int
+  korean_food      Int?
+  japan_food       Int?
+  china_food       Int?
+  western_food     Int?
+  chicken          Int?
+  snack_food       Int?
+  meat             Int?
+  lunchbox         Int?
+  LNS              Int?
+  fastfood         Int?
+  dessert          Int?
+  asian_food       Int?
+
+  reviews          Review[]
+  inquiries        Inquiry[]
+  alarms           Alarm[]
+  accountMissions  AccountMission[]
+}
+
+model Restaurant {
+  id             BigInt    @id @default(autoincrement())
+  restaurant_name String   @db.VarChar(40)
+  address        String   @db.VarChar(100)
+  type           String?  @db.VarChar(15)
+  picture        String?  @db.VarChar(45)
+  created_date   DateTime @db.DateTime(3)
+  updated_date   DateTime? @db.DateTime(3)
+  inactive_date  DateTime?
+  status         String?  @db.VarChar(15)
+  phone_number   String?  @db.VarChar(20)
+
+  reviews        Review[]
+  missions       Mission[]
+}
+
+model Review {
+  id             BigInt    @id @default(autoincrement())
+  Restaurant_id  BigInt
+  Account_id     String
+  score          Int?
+  picture        String?   @db.VarChar(45)
+  content        String?   @db.Text
+  created_date   DateTime  @db.DateTime(3)
+  updated_date   DateTime? @db.DateTime(3)
+
+  restaurant     Restaurant @relation(fields: [Restaurant_id], references: [id])
+  account        Account    @relation(fields: [Account_id], references: [id])
+}
+
+model Mission {
+  id             BigInt    @id @default(autoincrement())
+  Restaurant_id  BigInt
+  mission_name   String    @db.VarChar(40)
+  deadline       DateTime? @db.DateTime
+  created_date   DateTime  @db.DateTime(3)
+  updated_date   DateTime? @db.DateTime(3)
+  count          Int?
+  mission_point  Int?
+
+  restaurant     Restaurant @relation(fields: [Restaurant_id], references: [id])
+  accountMissions AccountMission[]
+}
+
+model Inquiry {
+  id             Int      @id @default(autoincrement())
+  Account_id     String
+  title          String?  @db.VarChar(40)
+  image          String?  @db.VarChar(45)
+  content        String?  @db.Text
+  waiting        Int?     @db.TinyInt
+  created_date   DateTime? @db.DateTime(3)
+  type           String?  @db.VarChar(20)
+
+  account        Account  @relation(fields: [Account_id], references: [id])
+}
+
+enum alarmType {
+  review
+  mission
+  event
+}
+
+model Alarm {
+  id             Int      @id @default(autoincrement())
+  Account_id     String
+  type           alarmType?
+  title          String?  @db.VarChar(25)
+  content        String?  @db.VarChar(50)
+  created_date   DateTime? @db.DateTime(3)
+  updated_date   DateTime? @db.DateTime(3)
+
+  account        Account  @relation(fields: [Account_id], references: [id])
+}
+
+enum MissionStatus {
+  ongoing
+  succeed
+  failed
+}
+
+model AccountMission {
+  Account_id  String
+  Mission_id  BigInt
+  success     MissionStatus?
+
+  account     Account  @relation(fields: [Account_id], references: [id])
+  mission     Mission  @relation(fields: [Mission_id], references: [id])
+
+  @@id([Account_id, Mission_id])
+  @@index([Mission_id])
+  @@index([Account_id])
+  @@map("account_mission")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.VarChar(512)
+  expiresAt DateTime @map("expires_at")
+
+  @@map("session")
+}

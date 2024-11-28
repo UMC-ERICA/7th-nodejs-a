@@ -18,6 +18,7 @@ model Account {
   nickname    String    @db.VarChar(10)
   create_at   DateTime  @db.Date
   name        String    @db.VarChar(45)
+  email       String    @db.VarChar(30)
   phone       String    @db.VarChar(45)
   birth       DateTime  @db.Date
   address     String?   @db.VarChar(45)
@@ -143,6 +144,16 @@ model Restarant_Image {
 
   restaurant          Restaurant  @relation(fields: [restaurant_id], references: [id])
 }
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.VarChar(512)
+  expiresAt DateTime @map("expires_at")
+
+  @@map("session")
+}
+
 
 // Enum Types
 enum StateEnum {

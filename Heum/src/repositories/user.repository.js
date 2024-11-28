@@ -19,3 +19,9 @@ export const getUser = async (userId) => {
   const user = await prisma.account.findFirst({ where: { xid: userId } });
   return user;
 };
+
+
+export const changeUser = async (data, xid) => {
+  const user = await prisma.account.update({ where: { xid: xid }, data: data });
+  return user;
+}

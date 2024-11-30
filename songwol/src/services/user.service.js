@@ -1,7 +1,7 @@
 //실제 로직 구현
 import { bodyToUser } from "../dtos/user.dto.js";
 import { DuplicateUserEmailError } from "../errors.js";
-import { addUser, getUser, } from "../repositories/user.repository.js";
+import { addUser, getUser, updateUser } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
   const joinUserId = await addUser({
@@ -21,3 +21,16 @@ export const userSignUp = async (data) => {
 
   return bodyToUser({ user });
 };
+
+export const userInfo = async (data) => {
+  const modifyInfo = await updateUser ({
+    email: data.email,
+    name: data.name,
+    gender: data.gender,
+    birth: data.birth,
+    address: data.address,
+    number: data.number,
+  })
+
+  return bodyToUser({ modifyInfo });
+}

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { bodyToUser } from "../dtos/user.dto.js";
-import { userSignUp } from "../services/user.service.js";
+import { userSignUp, userInfo } from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
   /*
@@ -81,3 +81,13 @@ export const handleUserSignUp = async (req, res, next) => {
     next(error);
   }
 };
+
+export const modifyUserInfo = async (req, res, next) => {
+  try { 
+    const user = await userInfo(req.body);
+    
+    res.status(StatusCodes.OK).success(user);
+  } catch (error) {
+    next(error);
+  }
+}

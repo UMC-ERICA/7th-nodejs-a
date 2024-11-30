@@ -5,10 +5,10 @@ import { bodyToUser } from "../dtos/user.dto.js";
 import { bodyToTryingMission } from "../dtos/mission.dto.js";
 
 //services
-import { userSignUp } from "../services/user.service.js";
+import { userSignUp, updateUser } from "../services/user.service.js";
 import { addTryingMission } from "../services/mission.service.js";
 
-
+import { customError } from "../error.js";
 
 //회원가입
 export const handleUserSignUp = async (req, res, next) => {
@@ -70,3 +70,31 @@ export const handleUserMissionAdd = async(req, res, next) =>{
   }
 }
 
+
+//사용자 정보 수정
+export const handleUpdateUser = async(req, res, next) =>{
+  /*
+  #swagger.summary = '사용자 정보 수정 API'
+  #swagger.requestBody = {
+    $ref: "#/components/userSchemas/updateUserRequest"
+  };
+  #swagger.responses[200] = {
+    $ref: "#/components/userSchemas/update_200"
+  };
+  #swagger.responses[404] = {
+    $ref: "#/components/userSchemas/update_404"
+  };
+  #swagger.responses[500] = {
+    $ref: "#/components/userSchemas/update_500"
+  };
+  */
+  console.log("사용자 정보 수정 요청!");
+  console.log("body: ", req.body);
+
+  try{
+    const user = await updateUser(bodyToUser(req.body), parseInt(req.params.userId));
+    res.status(StatusCodes.OK).success(user);
+  }catch(err){
+    next(err);
+  }
+}

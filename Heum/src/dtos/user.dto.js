@@ -7,6 +7,7 @@ export const bodyToUser = (body) => {
         nickname: body.nickname,
         create_at,
         name: body.name,
+        email: body.email,
         phone: body.phone,
         birth,
         address: body.address ?? null,

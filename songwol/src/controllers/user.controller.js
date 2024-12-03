@@ -76,6 +76,10 @@ export const handleUserSignUp = async (req, res, next) => {
   try {
     const user = await userSignUp(bodyToUser(req.body));
 
+    if (!user) {
+      throw new Error(`user 정보를 입력해주세요`);
+    }
+
     res.status(StatusCodes.OK).success(user);
   } catch (error) {
     next(error);
@@ -85,7 +89,11 @@ export const handleUserSignUp = async (req, res, next) => {
 export const modifyUserInfo = async (req, res, next) => {
   try { 
     const user = await userInfo(req.body);
-    
+
+    if (!user) {
+      throw new Error(`user 정보를 입력해주세요`);
+    }
+
     res.status(StatusCodes.OK).success(user);
   } catch (error) {
     next(error);

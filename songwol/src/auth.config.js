@@ -50,7 +50,7 @@ const googleVerify = async (profile) => {
 export const kakaoStrategy = new KakaoStrategy(
     {
       clientID: process.env.PASSPORT_KAKAO_CLIENT_ID,
-      callbackURL: 'http://localhost:3000/oauth2/callback/kakao',
+      callbackURL: process.env.REDIRECT_URI,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

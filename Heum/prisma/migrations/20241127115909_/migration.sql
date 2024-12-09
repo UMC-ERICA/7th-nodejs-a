@@ -1,0 +1,19 @@
+/*
+  Warnings:
+
+  - You are about to alter the column `comment_date` on the `comment` table. The data in that column could be lost. The data in that column will be cast from `DateTime(0)` to `DateTime`.
+
+*/
+-- AlterTable
+ALTER TABLE `comment` MODIFY `comment_date` DATETIME NOT NULL;
+
+-- CreateTable
+CREATE TABLE `session` (
+    `id` VARCHAR(191) NOT NULL,
+    `sid` VARCHAR(191) NOT NULL,
+    `data` VARCHAR(512) NOT NULL,
+    `expires_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `session_sid_key`(`sid`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
